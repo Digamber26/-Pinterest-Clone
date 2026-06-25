@@ -15,13 +15,13 @@ router.get('/createuser', function(req, res, next) {
 });
 
 /* POST create user. */
-router.post('/creatpost', async function(req, res, next) {
+router.post('/createuser', async function(req, res, next) {
   try {
     const createdUser = await usermodel.create({
-      username: req.body.username,
-      fullname: req.body.fullname,
-      email: req.body.email,
-      password: req.body.password,
+      username: "Digamber Kalambe",
+      fullname: "Digamber Kalambe",
+      email: "digamber@example.com",
+      password: "password123",
       post: []
     });
     res.send(createdUser);

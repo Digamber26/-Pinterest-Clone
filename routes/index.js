@@ -1,42 +1,49 @@
-var express = require('express');
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
 const usermodel = require("./users");
 const postmodel = require("./posts");
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
-/* GET create user form. */
-router.get('/createuser', function(req, res, next) {
-  res.render('createuser');
-});
-
-/* POST create user. */
-router.post('/createuser', async function(req, res, next) {
+/* GET create user */
+router.get("/createuser", async function (req, res, next) {
   try {
     const createdUser = await usermodel.create({
-      username: "Digamber Kalambe",
+      username: "digamber",
       fullname: "Digamber Kalambe",
       email: "digamber@example.com",
       password: "password123",
-      post: []
+      posts: [],
     });
+
     res.send(createdUser);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 });
 
-/* GET create post. */
-router.get("/createpost", async function (req, res) {
+/* GET create post */
+router.get("/createpost", async function (req, res, next) {
   try {
+    // Find the user first
+    const user = await usermodel.findOne({
+      email: "digamber@example.com",
+    });
+
+    // If user is not found, send 400 error
+    if (!user) {
+      return res.status(400).send("User not found. Open /createuser first.");
+    }
+
+    // Create post with correct user ID
     const post = await postmodel.create({
       postText: "My first Pinterest post",
-      likes: 0,
+      user: user._id,
+      likes: [],
     });
+
+    // Add post ID into user's posts array
+    user.posts.push(post._id);
+    await user.save();
 
     res.send(post);
   } catch (err) {

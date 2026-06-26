@@ -35,10 +35,13 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
-    post: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Post",
-    }],
+    posts: {
+      type: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "post",
+      }],
+      default: [],
+    },
   },
   {
     timestamps: true,

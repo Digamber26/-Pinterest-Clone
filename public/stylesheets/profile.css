@@ -1,0 +1,10 @@
+    /* Custom scrollbar hidden on mobile for cleaner look */
+    @media (max-width: 640px) {
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+   /* Design by Adalahreza 🐺 for Norch Studio  */

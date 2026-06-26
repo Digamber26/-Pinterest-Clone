@@ -1,50 +1,68 @@
 const express = require("express");
 const router = express.Router();
-
-const usermodel = require("./users");
-const postmodel = require("./posts");
 const passport = require("passport");
-const localStrategy = require("passport-local");
-passport.authenticate(new localStrategy(usermodel.authenticate()));
+const User = require("./users");
 
-router.get("/", function(req, res, next){
-  res.render("index",{title: "Pinterest"});
+router.get("/", function(req, res, next) {
+  res.render("index", { title: "Pinterest" });
 });
 
-router.get("/profile", isLoggedIn,function(req, res, next) {
-  res.send("profile page");
+router.get('/login', function(req, res, next) {
+  res.render("login");
 });
 
-router.post("/register",function (req, res) {
-  const { username, fullname, email } = req.body;
-const userData = new usermodel({ username, fullname, email });
-
-userModel.register(userData, req.body.password)
-.then(function () {
-  pasdsport.authenticate("local")(req, res, function () {
-    res.redirect("/profile");
-  })
-})
-})
-
-router.post("/login",passport.authenticate("local",{
-  successRedirect: "/profile",
-  failureRedirect: "/",
-}),function (req, res) {
-
+router.get('/feed', function(req, res, next) {
+  res.render("feed");
 });
 
-router.get("/logout", function (req, res) {
+router.get("/profile", isLoggedIn, function(req, res, next) {
+  res.render("profile");
+});
 
+router.post("/register", async function(req, res) {
+  const { username, fullname, email, password } = req.body;
 
+  try {
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).send("User already exists");
+    }
 
-})
+    const user = await User.create({ username, fullname, email, password });
+    req.login(user, function(err) {
+      if (err) {
+        return res.status(500).send(err.message);
+      }
+      res.redirect("/profile");
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/profile",
+    failureRedirect: "/login",
+  }),
+  function(req, res) {}
+);
+
+router.get("/logout", function(req, res) {
+  req.logout(function(err) {
+    if (err) {
+      return res.status(500).send(err.message);
+    }
+    res.redirect("/login");
+  });
+});
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/");
+  res.redirect("/login");
 }
 
 module.exports = router;

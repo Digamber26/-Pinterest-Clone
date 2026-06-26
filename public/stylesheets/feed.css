@@ -1,0 +1,14 @@
+.grid {	
+	columns: 4;
+	column-fill: balance;
+	column-gap: 1em;
+	
+	&__item {
+		margin-bottom: 1em;
+		
+		img {
+			background-color: #DDDDDD;
+			width: 100%;
+		}
+	}
+}

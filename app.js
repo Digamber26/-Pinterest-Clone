@@ -8,6 +8,8 @@ const expressSession = require("express-session");
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('./routes/users');
+const Post = require('./routes/posts');
+const flash = require('connect-flash');
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/pinterestclone")
@@ -22,6 +24,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(flash());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

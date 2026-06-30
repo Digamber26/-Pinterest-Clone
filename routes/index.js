@@ -14,8 +14,36 @@ router.get('/login', function(req, res, next) {
   res.render("login", { error: errors.length > 0 ? errors[0] : '' });
 });
 
-router.get('/feed', function(req, res, next) {
-  res.render("feed");
+router.get('/feed', async function(req, res, next) {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 }).populate("user", "username");
+    res.render("feed", { posts, currentUser: req.user });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/posts/:id/like', isLoggedIn, async function(req, res, next) {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+
+    const userId = req.user._id.toString();
+    const hasLiked = post.likes.some((id) => id.toString() === userId);
+
+    if (hasLiked) {
+      post.likes = post.likes.filter((id) => id.toString() !== userId);
+    } else {
+      post.likes.push(req.user._id);
+    }
+
+    await post.save();
+    res.redirect(req.get('Referer') || '/feed');
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post('/upload', isLoggedIn, function(req, res, next) {
@@ -70,7 +98,7 @@ router.get("/profile", isLoggedIn, async function(req, res, next) {
       return res.status(404).send('User not found');
     }
     console.log('✓ User found:', user.username);
-    res.render("profile", { user });
+    res.render("profile", { user, currentUser: req.user });
   } catch (err) {
     console.error('❌ Profile error:', err.message);
     console.error('   Stack:', err.stack);

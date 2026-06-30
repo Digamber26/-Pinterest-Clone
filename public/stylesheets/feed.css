@@ -1,14 +1,73 @@
-.grid {	
-	columns: 4;
-	column-fill: balance;
-	column-gap: 1em;
-	
-	&__item {
-		margin-bottom: 1em;
-		
-		img {
-			background-color: #DDDDDD;
-			width: 100%;
-		}
-	}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f6f6f6;
+  padding: 20px;
+}
+
+.grid {
+  columns: 4;
+  column-gap: 1em;
+}
+
+.grid__item {
+  margin-bottom: 1em;
+  break-inside: avoid;
+}
+
+.pin-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pin-image {
+  display: block;
+  width: 100%;
+  background-color: #dddddd;
+}
+
+.pin-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 12px;
+}
+
+.pin-caption {
+  margin: 0;
+  font-weight: 600;
+}
+
+.pin-user {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.like-form {
+  margin: 0;
+}
+
+.like-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #f2f2f2;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.like-btn.liked {
+  background: #ffe5e9;
+  color: #e60023;
+}
+
+.empty-state {
+  color: #666;
+  font-size: 1rem;
 }

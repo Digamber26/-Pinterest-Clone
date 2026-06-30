@@ -3,53 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Feed</title>
     <link rel="stylesheet" href="/stylesheets/feed.css" />
 </head>
 <body>
     <div class="grid">
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/300?random=1">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/300/300?random=1">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/300/200?random=2">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/300?random=3">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/400?random=2">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/500/300?random=4">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/150?random=5">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/300?random=1">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/250/300?random=4">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/200?random=3">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/300?random=1">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/300?random=2">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/300?random=5">
-	</div>
-	<div class="grid__item">
-		<img src="https://picsum.photos/200/200?random=4">
-	</div>
-</div>
+        <% if (posts && posts.length > 0) { %>
+            <% posts.forEach(function(post){ %>
+                <div class="grid__item">
+                    <div class="pin-card">
+                        <img class="pin-image" src="/images/uploads/<%= post.image %>" alt="<%= post.imageText %>">
+                        <div class="pin-meta">
+                            <div>
+                                <p class="pin-caption"><%= post.imageText %></p>
+                                <% if (post.user) { %>
+                                    <p class="pin-user">@<%= post.user.username %></p>
+                                <% } %>
+                            </div>
+                            <% const isLiked = currentUser && post.likes.some((id) => id.toString() === currentUser._id.toString()); %>
+                            <% if (currentUser) { %>
+                                <form action="/posts/<%= post._id %>/like" method="post" class="like-form">
+                                    <button type="submit" class="like-btn <%= isLiked ? 'liked' : '' %>">♥ <span><%= post.likes.length %></span></button>
+                                </form>
+                            <% } else { %>
+                                <a href="/login" class="like-btn">♥ <span><%= post.likes.length %></span></a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p class="empty-state">No pins yet.</p>
+        <% } %>
+    </div>
 </body>
 </html>

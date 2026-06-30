@@ -46,6 +46,17 @@
           <img src="/images/uploads/<%= post.image %>" class="card-img-top" alt="...">
           <div class="card-body">
             <h5 class="card-title"><%= post.imageText %></h5>
+            <% const isLiked = currentUser && post.likes && post.likes.some((id) => id.toString() === currentUser._id.toString()); %>
+            <% if (currentUser) { %>
+              <form action="/posts/<%= post._id %>/like" method="post" class="mt-2">
+                <button type="submit" class="btn btn-sm <%= isLiked ? 'btn-danger' : 'btn-outline-danger' %>">
+                  <%= isLiked ? '♥ Liked' : '♡ Like' %>
+                  <span class="badge text-bg-light"><%= post.likes ? post.likes.length : 0 %></span>
+                </button>
+              </form>
+            <% } else { %>
+              <a href="/login" class="btn btn-sm btn-outline-danger mt-2">♡ Like</a>
+            <% } %>
           </div>
         </div>
       <% }); %>
